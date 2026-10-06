@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>N64 Parkour</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; color: #fff; font-family: "Courier New", monospace; }
+    canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+    #hud, #msg, #help { pointer-events: none; }
+    #hud { position: fixed; left: 12px; top: 10px; font-size: 20px; font-weight: bold; text-shadow: 2px 2px 0 #000; }
+    #msg { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; text-align: center; font-size: 30px; font-weight: bold; line-height: 1.5; text-shadow: 3px 3px 0 #000; }
+    #help { position: fixed; left: 12px; bottom: 10px; font-size: 13px; text-shadow: 1px 1px 0 #000; }
+    #panel { position: fixed; right: 10px; top: 10px; width: 280px; max-height: calc(100% - 20px); overflow: auto; box-sizing: border-box; padding: 8px; background: rgba(10,16,40,.9); border: 3px solid #ffd800; font-size: 13px; }
+    #panel.hide { display: none; }
+    #panel button, #panel input, #panel select { font: inherit; box-sizing: border-box; }
+    #panel button { width: 100%; margin: 2px 0; padding: 5px; background: #2a4bd7; color: #fff; border: 2px solid #fff; cursor: pointer; }
+    #panel button.on { background: #ffd800; color: #000; }
+    #panel input, #panel select { width: 100%; padding: 4px; background: #000; color: #fff; border: 2px solid #7aa2ff; }
+    #panel label { display: block; margin: 4px 0; }
+    #tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+    .pane { display: none; }
+    .row { display: flex; gap: 4px; }
+    .row > * { flex: 1; min-width: 0; }
+    .hint { opacity: .75; font-size: 12px; line-height: 1.4; }
+    #lvname { margin-bottom: 6px; font-weight: bold; color: #ffd800; }
+    #status { min-height: 16px; margin-top: 6px; color: #ffd800; }
+    .item { display: flex; align-items: center; gap: 4px; }
+    .item a { padding: 0 6px; color: #ffd800; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div id="game"></div>
+  <div id="hud"></div>
+  <div id="msg"></div>
+  <div id="help">WASD: бег. Пробел: прыжок. V: первое лицо. Q/E, стрелки, мышь: камера. R: заново. M: меню.</div>
+
+  <div id="panel">
+    <div id="tabs">
+      <button data-tab="play">Игра</button>
+      <button data-tab="edit">Редактор</button>
+      <button data-tab="shop">Мастерская</button>
+    </div>
+
+    <div class="pane" id="pane-play">
+      <div id="lvname"></div>
+      <label>Сид <input id="seed" placeholder="любое слово или число"></label>
+      <div class="row"><button id="btnSeed">Играть по сиду</button><button id="btnRand">Случайный</button></div>
+      <button id="btnClassic">Классический уровень</button>
+      <label>Код уровня <input id="code" placeholder="вставьте код"></label>
+      <button id="btnCode">Загрузить код</button>
+      <button class="link">Скопировать ссылку на уровень</button>
+    </div>
+
+    <div class="pane" id="pane-edit">
+      <label>Название <input id="ename" maxlength="40"></label>
+      <label>Инструмент
+        <select id="tool">
+          <option value="plat">Платформа</option>
+          <option value="coin">Монета</option>
+          <option value="goal">Звезда (финиш)</option>
+          <option value="start">Старт</option>
+          <option value="erase">Стереть</option>
+        </select>
+      </label>
+      <div class="row">
+        <label>Ширина <input id="edw" type="number" value="3" min="1" max="30" step="0.5"></label>
+        <label>Глубина <input id="edd" type="number" value="3" min="1" max="30" step="0.5"></label>
+        <label>Высота <input id="edh" type="number" value="0" step="0.5"></label>
+      </div>
+      <button id="btnTest">Играть этот уровень</button>
+      <button id="btnNew">Новый пустой уровень</button>
+      <button class="link">Скопировать ссылку на уровень</button>
+      <button id="btnSubmit">Отправить в Мастерскую</button>
+      <p class="hint">ЛКМ: поставить. ПКМ: стереть. WASD: двигать камеру. Q/E: поворот. Колесо: зум. Z/X: высота.</p>
+    </div>
+
+    <div class="pane" id="pane-shop">
+      <button id="btnShop">Обновить список</button>
+      <div id="shoplist"></div>
+      <p class="hint">Уровни игроков. Лайк уровню: поставьте 👍 на его странице (значок ↗).</p>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
